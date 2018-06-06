@@ -1,5 +1,8 @@
 # todomvc
 
+## This is the master branch of todomvc
+### On the remove-jQuery branch I will remove the framework one features at a time.
+
 TodoMVC jQuery
 
 URL: https://hyperdev.com/#!/project/maze-stealer
