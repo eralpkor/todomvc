@@ -28,7 +28,7 @@ jQuery(function ($) {
 		pluralize: function (count, word) {
 			return count === 1 ? word : word + 's';
 		},
-		store: function (namespace, data) {
+		store: function (namespace, data) {  // uses local storage to  store items in todos-WTF key
 			if (arguments.length > 1) {
 				return localStorage.setItem(namespace, JSON.stringify(data));
 			} else {
@@ -40,7 +40,7 @@ jQuery(function ($) {
 
 	var App = {
 		init: function () {
-			this.todos = util.store('todos-jquery');
+			this.todos = util.store('todos-WTF');
 			this.todoTemplate = Handlebars.compile($('#todo-template').html());
 			this.footerTemplate = Handlebars.compile($('#footer-template').html());
 			this.bindEvents();
@@ -64,13 +64,21 @@ jQuery(function ($) {
 				.on('click', '.destroy', this.destroy.bind(this));
 		},
 		render: function () {
-			var todos = this.getFilteredTodos();
-			$('#todo-list').html(this.todoTemplate(todos));
-			$('#main').toggle(todos.length > 0);
+      var todos = this.getFilteredTodos();
+      document.getElementById('todo-list').innerHTML = this.todoTemplate(todos);
+			// $('#todo-list').html(this.todoTemplate(todos));
+      // $('#main').toggle(todos.length > 0); // if todos
+      var main = document.getElementById('main');
+      if (todos.length > 0) {
+        main.style.display = 'block';
+      } else {
+        main.style.display = 'none';
+      }
 			$('#toggle-all').prop('checked', this.getActiveTodos().length === 0);
-			this.renderFooter();
-			$('#new-todo').focus();
-			util.store('todos-jquery', this.todos);
+      this.renderFooter();
+      document.getElementById('new-todo').focus();  // replaced
+			// $('#new-todo').focus();  // moves cursor to new-todo input
+			util.store('todos-WTF', this.todos); // uses local storage to  store items in todos-WTF key
 		},
 		renderFooter: function () {
 			var todoCount = this.todos.length;
@@ -85,7 +93,8 @@ jQuery(function ($) {
 			$('#footer').toggle(todoCount > 0).html(template);
 		},
 		toggleAll: function (e) {
-			var isChecked = $(e.target).prop('checked');
+      var isChecked = e.target.checked; // replaced
+			// var isChecked = $(e.target).prop('checked');
 
 			this.todos.forEach(function (todo) {
 				todo.completed = isChecked;
@@ -122,22 +131,25 @@ jQuery(function ($) {
 		// accepts an element from inside the `.item` div and
 		// returns the corresponding index in the `todos` array
 		indexFromEl: function (el) {
-			var id = $(el).closest('li').data('id');
+      var id = el.closest('li').getAttribute('data-id');  // Replaced
+			// var id = $(el).closest('li').data('id'); // gets the closest 'li' and assigns id to a variable id. It was checked as class='completed' or not adds a class
 			var todos = this.todos;
 			var i = todos.length;
 
-			while (i--) {
+			while (i--) { // it loops count down to 0 to check all todos and returns todos.length 0
 				if (todos[i].id === id) {
 					return i;
 				}
 			}
 		},
 		create: function (e) {
-			var $input = $(e.target);
-			var val = $input.val().trim();
+      var $input = e.target;
+      // var $input = $(e.target);  // gets the target attribute 'input#new-todo'
+      var val = $input.value.trim();  // assigns to val="New Todo", $input= input#new-todo
+			// var val = $input.val().trim();
 
-			if (e.which !== ENTER_KEY || !val) {
-				return;
+			if (e.which !== ENTER_KEY || !val) {  // checks keyboard keys, if key not ENTER or not val exits
+				return;                             // if statement, otherwise pushes to todo Array
 			}
 
 			this.todos.push({
@@ -146,7 +158,8 @@ jQuery(function ($) {
 				completed: false
 			});
 
-			$input.val('');
+      // $input.val('');
+      $input.value = '';
 
 			this.render();
 		},
