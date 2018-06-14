@@ -74,7 +74,7 @@ jQuery(function ($) {
 			}.bind(this));
 			todoList.addEventListener('dblclick', function(e) {	// works? maybe?
 				if (e.target.tagName == 'LABEL') {
-					this.edit(e);
+					this.editMode(e);
 				}
 			}.bind(this));
 			todoList.addEventListener('keyup', function(e) {
@@ -218,7 +218,7 @@ jQuery(function ($) {
 			this.todos[i].completed = !this.todos[i].completed;
 			this.render();
 		},
-		edit: function (e) {
+		editMode: function (e) {
 			var $input = e.target.closest('li');
 			$input.className = 'editing';
 			$input.querySelector('.edit').focus();
