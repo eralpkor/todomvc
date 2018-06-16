@@ -1,9 +1,12 @@
 # todomvc
 
 ## This is the master branch of todomvc
-###  I will remove the framework one features at a time.
+###  As in Watch & Code digestions techniques (exercise), replaced all jQuery from the app.js
 
-TodoMVC jQuery
+### This is the end result as of 6/16/19
 
+
+TodoMVC jQuery removed
+Working app in this link
 URL: https://eralpkor.github.io/todomvc/
 
