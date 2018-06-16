@@ -26,29 +26,29 @@
 
 			return uuid;
 		},
-		pluralize: function (count, word) {
+		pluralize: function (count, word) {	// adds or removes 's' from word 'item'. if items more then one 's' to end of word. If 0 items also adds 's' eg. 'items'
 			return count === 1 ? word : word + 's';
 		},
 		store: function (namespace, data) {  // uses local storage to  store items in todos-STORAGE key
-			if (arguments.length > 1) {
-				return localStorage.setItem(namespace, JSON.stringify(data));
+			if (arguments.length > 1) {	// if arguments length greater then 1
+				return localStorage.setItem(namespace, JSON.stringify(data)); // create string version and set LS 'todos-STORAGE'  with data
 			} else {
-				var store = localStorage.getItem(namespace);
-				return (store && JSON.parse(store)) || [];
+				var store = localStorage.getItem(namespace);	// get LS name and assign to 'store'
+				return (store && JSON.parse(store)) || [];	// if store exist parse it to JS object if not create empty array.
 			}
 		}
 	};
 
 	var App = {
-		init: function () {
-			this.todos = util.store('todos-STORAGE');
-			var todoTem = document.getElementById('todo-template').innerHTML;
+		init: function () {	// initialize on first opening of the page and refresh
+			this.todos = util.store('todos-STORAGE'); // setup the LS if it's first time.  If exits go get the data that stored in LS
+			var todoTem = document.getElementById('todo-template').innerHTML;	
 			// this.todoTemplate = Handlebars.compile($('#todo-template').html());
-			this.todoTemplate = Handlebars.compile(todoTem);
+			this.todoTemplate = Handlebars.compile(todoTem);	// creates handlebar templates
 			var footerTem = document.getElementById('footer-template').innerHTML;
 			// this.footerTemplate = Handlebars.compile($('#footer-template').html());
-			this.footerTemplate = Handlebars.compile(footerTem);
-			this.bindEvents();
+			this.footerTemplate = Handlebars.compile(footerTem);	// creates handlebar templates
+			this.bindEvents();	// setup all event listeners
 
 			new Router({
 				'/:filter': function (filter) {
@@ -57,7 +57,7 @@
 				}.bind(this)
 			}).init('/all');	// url/#/all Showing all todos
 		},
-		bindEvents: function () {
+		bindEvents: function () {	// setup all event listeners
 			document.getElementById('new-todo').addEventListener('keyup', this.create.bind(this));
 			// $('#new-todo').on('keyup', this.create.bind(this));
 			document.getElementById('toggle-all').addEventListener('change', this.toggleAll.bind(this));
