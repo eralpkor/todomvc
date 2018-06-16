@@ -235,37 +235,27 @@
 			}
 
 			if (e.which === ESCAPE_KEY) {
-				e.target.data = {
-					abort: true
-				}
-		
+				e.target.setAttribute('abort', true);
 				e.target.blur();
 				// $(e.target).data('abort', true).blur();
 			}
 		},
-		update: function (e) {
+		update: function (e) {	// updated the target element with new value
 			var el = e.target;
 			var	$el = el;
 			// var $el = $(el);
-			var val = $el.value.trim();
+			var val = $el.value.trim();	// gets value and trim white space
 			// var val = $el.val().trim();
 
-			if (!val) {
+			if (!val) {	// if value is not value run destroy method
 				this.destroy(e);
 				return;
 			}
-			if ($el.data === 'abort') {
-				$el.data = {
-					abort: false
-				}
+			if ($el.getAttribute('abort')) {	// if 
+				$el.setAttribute('abort', false);
 			} else {
 				this.todos[this.indexFromEl(el)].title = val;
 			}
-		/* 	if ($el.data('abort')) {
-				$el.data('abort', false);
-			} else {
-				this.todos[this.indexFromEl(el)].title = val;
-			} */
 
 			this.render();
 		},
