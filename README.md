@@ -6,8 +6,8 @@
 ### This is the end result as of 6/16/19
 
 
-TodoMVC jQuery removed
-Working app in this link
+TodoMVC jQuery removed.
+Working app @ this link
 URL: https://eralpkor.github.io/todomvc/
 
 original app can be found @
