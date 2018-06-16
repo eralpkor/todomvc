@@ -1,7 +1,8 @@
 /*global jQuery, Handlebars, Router */
-jQuery(function ($) {
+/* jQuery(function ($) {
+	'use strict'; */
+	(function()	{
 	'use strict';
-
 	Handlebars.registerHelper('eq', function (a, b, options) {
 		return a === b ? options.fn(this) : options.inverse(this);
 	});
@@ -41,8 +42,12 @@ jQuery(function ($) {
 	var App = {
 		init: function () {
 			this.todos = util.store('todos-STORAGE');
-			this.todoTemplate = Handlebars.compile($('#todo-template').html());
-			this.footerTemplate = Handlebars.compile($('#footer-template').html());
+			var todoTem = document.getElementById('todo-template').innerHTML;
+			// this.todoTemplate = Handlebars.compile($('#todo-template').html());
+			this.todoTemplate = Handlebars.compile(todoTem);
+			var footerTem = document.getElementById('footer-template').innerHTML;
+			// this.footerTemplate = Handlebars.compile($('#footer-template').html());
+			this.footerTemplate = Handlebars.compile(footerTem);
 			this.bindEvents();
 
 			new Router({
@@ -74,7 +79,7 @@ jQuery(function ($) {
 			}.bind(this));
 			todoList.addEventListener('dblclick', function(e) {	// works? maybe?
 				if (e.target.tagName == 'LABEL') {
-					this.editMode(e);
+					this.edit(e);
 				}
 			}.bind(this));
 			todoList.addEventListener('keyup', function(e) {
@@ -89,16 +94,15 @@ jQuery(function ($) {
 			}.bind(this));
 			todoList.addEventListener('click', function(e) {
 				if (e.target.className == 'destroy') {
-					this.destroy(e);
+					App.destroy(e);
 				}
-			}.bind(this));
+			});
 			// $('#todo-list')
 			// 	.on('change', '.toggle', this.toggle.bind(this))	// checks checked in input.toggle
 			// 	.on('dblclick', 'label', this.edit.bind(this))
 			// 	.on('keyup', '.edit', this.editKeyup.bind(this))
 			// 	.on('focusout', '.edit', this.update.bind(this))
 			// 	.on('click', '.destroy', this.destroy.bind(this));
-			
 		},
 		render: function () {	// checks todos whenever there is change in UI and updates todos on UI
       var todos = this.getFilteredTodos();	
@@ -218,51 +222,59 @@ jQuery(function ($) {
 			this.todos[i].completed = !this.todos[i].completed;
 			this.render();
 		},
-		editMode: function (e) {
+		edit: function (e) {	// 
 			var $input = e.target.closest('li');
 			$input.className = 'editing';
 			$input.querySelector('.edit').focus();
 			// var $input = $(e.target).closest('li').addClass('editing').find('.edit');	// from target get closest li, add a class name than find child '.edit' class and assign it to $input.
 			// $input.val($input.val()).focus();	// sets input to input and focus to it
 		},
-		editKeyup: function (e) {
-			if (e.which === ENTER_KEY) {
+		editKeyup: function (e) {	// if enter and esc key pressed this will blur (loose focus) on enter key and aborts on esc key
+			if (e.which === ENTER_KEY) {	// if any other key pressed it goes to update 0
 				e.target.blur();
 			}
 
 			if (e.which === ESCAPE_KEY) {
-				$(e.target).data('abort', true).blur();
+				e.target.data = {
+					abort: true
+				}
+		
+				e.target.blur();
+				// $(e.target).data('abort', true).blur();
 			}
 		},
 		update: function (e) {
 			var el = e.target;
-			var $el = $(el);
-			var val = $el.val().trim();
+			var	$el = el;
+			// var $el = $(el);
+			var val = $el.value.trim();
+			// var val = $el.val().trim();
 
 			if (!val) {
 				this.destroy(e);
 				return;
 			}
-
-			if ($el.data('abort')) {
-				$el.data('abort', false);
+			if ($el.data === 'abort') {
+				$el.data = {
+					abort: false
+				}
 			} else {
 				this.todos[this.indexFromEl(el)].title = val;
 			}
+		/* 	if ($el.data('abort')) {
+				$el.data('abort', false);
+			} else {
+				this.todos[this.indexFromEl(el)].title = val;
+			} */
 
 			this.render();
 		},
-		destroy: function (e) {
+		destroy: function (e) {	// finds list items id translate it to position in the array and delete it from array
 			this.todos.splice(this.indexFromEl(e.target), 1);
 			this.render();
 		}
 	};
 
 	App.init();
-});
+})();
 
-
-
-
-			
-		
