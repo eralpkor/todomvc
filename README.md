@@ -10,3 +10,6 @@ TodoMVC jQuery removed
 Working app in this link
 URL: https://eralpkor.github.io/todomvc/
 
+original app can be found @
+http://todomvc.com/
+
