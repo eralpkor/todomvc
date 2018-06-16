@@ -1,4 +1,4 @@
-# todomvc
+# todoMVC
 
 ## This is the master branch of todomvc
 ###  As in Watch & Code digestion techniques (exercise), replaced all jQuery from the app.js
