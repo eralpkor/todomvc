@@ -1,15 +1,23 @@
 /*global jQuery, Handlebars, Router */
 /* jQuery(function ($) {
 	'use strict'; */
+	// function logThis() {
+	// 	console.log(this);
+	// }
+	// logThis();
+	
 	(function()	{
 	'use strict';
+
 	Handlebars.registerHelper('eq', function (a, b, options) {
-		return a === b ? options.fn(this) : options.inverse(this);
+		
+		return a === b ? options.fn(this) : options.inverse(this); // Case 5, case 4.
+		
 	});
 
 	var ENTER_KEY = 13;
 	var ESCAPE_KEY = 27;
-
+	
 	var util = {
 		uuid: function () {
 			/*jshint bitwise:false */
@@ -41,62 +49,82 @@
 
 	var App = {
 		init: function () {	// initialize on first opening of the page and refresh
-			this.todos = util.store('todos-STORAGE'); // setup the LS if it's first time.  If exits go get the data that stored in LS
+			this.todos = util.store('todos-STORAGE'); // setup the LS if it's first time.  If exits go get the data that stored in LS. Case 2.
 			var todoTem = document.getElementById('todo-template').innerHTML;	
 			// this.todoTemplate = Handlebars.compile($('#todo-template').html());
-			this.todoTemplate = Handlebars.compile(todoTem);	// creates handlebar templates
+			this.todoTemplate = Handlebars.compile(todoTem);	// creates handlebar templates. // Case 2
+			// console.log(this);
 			var footerTem = document.getElementById('footer-template').innerHTML;
 			// this.footerTemplate = Handlebars.compile($('#footer-template').html());
-			this.footerTemplate = Handlebars.compile(footerTem);	// creates handlebar templates
-			this.bindEvents();	// setup all event listeners
+			this.footerTemplate = Handlebars.compile(footerTem);	// creates handlebar templates and assign it to App.footerTemplate object property. Case 2.
+			this.bindEvents();	// setup all event listeners. 'this' refers to 'App' object. Case 2.
 
 			new Router({
 				'/:filter': function (filter) {
 					this.filter = filter;
 					this.render();
-				}.bind(this)
+				}.bind(this) // 'this' refers to App object, case 4.
 			}).init('/all');	// url/#/all Showing all todos
 		},
 		bindEvents: function () {	// setup all event listeners
-			document.getElementById('new-todo').addEventListener('keyup', this.create.bind(this));
+
+			document.getElementById('new-todo').addEventListener('keyup', this.create.bind(this)); // get element id 'new-todo' and add a listener on 'keyup' event. GEt the key event with callback function and invoke create() method. 'this' refers to App object, case 4
+			
 			// $('#new-todo').on('keyup', this.create.bind(this));
-			document.getElementById('toggle-all').addEventListener('change', this.toggleAll.bind(this));
+			document.getElementById('toggle-all').addEventListener('change', this.toggleAll.bind(this)); // Get 'toggle-all' id and listen for 'change', than invoke App.toggleAll(). "this' refers to App object, case 4
 			// $('#toggle-all').on('change', this.toggleAll.bind(this));
-			var footer = document.getElementById('footer');
+			var footer = document.getElementById('footer'); // Get id 'footer' and assign it to footer variable
 	
-			footer.addEventListener('click', function(e) {	// works
-				if (e.target.id === 'clear-completed') {
-					this.destroyCompleted();
+			footer.addEventListener('click', function(e) {	// Event listener on 'click' footer
+				if (e.target.id === 'clear-completed') { // if clicked target id is 'clear-completed' invoke destroyCompleted method.
+					App.destroyCompleted();
 				}
-			}.bind(this));
+			});
 			// $('#footer').on('click', '#clear-completed', this.destroyCompleted.bind(this));
 			var todoList = document.getElementById('todo-list');
-
+			
 			todoList.addEventListener('change', function(e) {		// works
 				if (e.target.className == 'toggle') {
-					this.toggle(e);
+					App.toggle(e);
 				}
-			}.bind(this));
-			todoList.addEventListener('dblclick', function(e) {	// works? maybe?
+			});
+
+			todoList.addEventListener('dblclick', function(e) {	// when addEventListener() method is called 'this' refers to 'todolist' method (variable). Left of the DOT rule. Than it is up to us to bind(this) or call App object with edit method. 
 				if (e.target.tagName == 'LABEL') {
-					this.edit(e);
+					App.edit(e);
 				}
-			}.bind(this));
+			});
+
 			todoList.addEventListener('keyup', function(e) {
 				if (e.target.className == 'edit') {
-					this.editKeyup(e);
+					App.editKeyup(e);
 				}
-			}.bind(this));
+			});
+
 			todoList.addEventListener('focusout', function(e) {
 				if (e.target.className == 'edit') {
-					this.update(e);
+					App.update(e);
 				}
-			}.bind(this));
+			});
+
+/* var eralp = this;
+			todoList.addEventListener('click', function(e) {
+				if (e.target.className == 'destroy') {
+					eralp.destroy(e);
+					console.log(this);
+				}
+			}); */
+		/* 	todoList.addEventListener('click', function(e) {
+				if (e.target.className == 'destroy') {
+					this.destroy(e);
+				}
+			}.bind(App)); */
 			todoList.addEventListener('click', function(e) {
 				if (e.target.className == 'destroy') {
 					App.destroy(e);
 				}
 			});
+
 			// $('#todo-list')
 			// 	.on('change', '.toggle', this.toggle.bind(this))	// checks checked in input.toggle
 			// 	.on('dblclick', 'label', this.edit.bind(this))
@@ -129,8 +157,8 @@
 			util.store('todos-STORAGE', this.todos); // uses local storage to  store items in todos-STORAGE key
 		},
 		renderFooter: function () {
-			var todoCount = this.todos.length;
-			var activeTodoCount = this.getActiveTodos().length;
+			var todoCount = this.todos.length; // total todos array length (number of todos) assign to var todoCount;
+			var activeTodoCount = this.getActiveTodos().length; // Get active todos length (number) by running getActiveTodos method and assign it to activeTodoCount variable.
 			var template = this.footerTemplate({
 				activeTodoCount: activeTodoCount,
 				activeTodoWord: util.pluralize(activeTodoCount, 'item'),
@@ -187,7 +215,8 @@
 		// accepts an element from inside the `.item` div and
 		// returns the corresponding index in the `todos` array
 		indexFromEl: function (el) {
-      var id = el.closest('li').getAttribute('data-id');  // Replaced
+			var id = el.closest('li').dataset.id;  // dataset or getattribute('classname') both fine
+			// var id = el.closest('li').getAttribute('data-id');
 			// var id = $(el).closest('li').data('id'); // gets the closest 'li' and assigns id to a variable id. It was checked as class='completed' or not adds a class
 			var todos = this.todos;
 			var i = todos.length;
@@ -268,3 +297,4 @@
 	App.init();
 })();
 
+// EOL

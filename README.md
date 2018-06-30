@@ -3,7 +3,7 @@
 ## This is the master branch of todomvc
 ###  As in Watch & Code digestion techniques (exercise), replaced all jQuery from the app.js
 
-### This is the end result as of 6/16/19
+### This is the end result as of today
 
 
 TodoMVC jQuery removed.
