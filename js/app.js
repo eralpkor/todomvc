@@ -61,8 +61,8 @@
 
 			new Router({
 				'/:filter': function (filter) {
-					this.filter = filter;
-					this.render();
+					this.filter = filter; // Case 2. refers to App
+					this.render(); // Case 2. Refers to App object
 				}.bind(this) // 'this' refers to App object, case 4.
 			}).init('/all');	// url/#/all Showing all todos
 		},
@@ -133,8 +133,8 @@
 			// 	.on('click', '.destroy', this.destroy.bind(this));
 		},
 		render: function () {	// checks todos whenever there is change in UI and updates todos on UI
-      var todos = this.getFilteredTodos();	
-      document.getElementById('todo-list').innerHTML = this.todoTemplate(todos); // 
+      var todos = this.getFilteredTodos();	// Case 2. 'this' refers to App object.
+      document.getElementById('todo-list').innerHTML = this.todoTemplate(todos); // // Case 2. 'this' refers to App object.
 			// $('#todo-list').html(this.todoTemplate(todos));
       // $('#main').toggle(todos.length > 0); // if todos length on display greater than 0 display: block
       var main = document.getElementById('main');	// less than 0 display: none on UI
@@ -145,25 +145,25 @@
 			}
 			var toggleAll = document.getElementById('toggle-all');
 			
-			if (this.getActiveTodos().length === 0) {	// replaced
+			if (this.getActiveTodos().length === 0) {	// Case 2. 'this' refers to App object.
 				toggleAll.checked = true;	//	Change boolean value of #toggle-all if active todos equal to 0
 			} else {
 				toggleAll.checked = false;
 			}
 			// $('#toggle-all').prop('checked', this.getActiveTodos().length === 0); // replaced
-      this.renderFooter();
+      this.renderFooter(); // Case 2. 'this' refers to App object.
       document.getElementById('new-todo').focus();  // replaced
 			// $('#new-todo').focus();  // moves cursor to new-todo input
-			util.store('todos-STORAGE', this.todos); // uses local storage to  store items in todos-STORAGE key
+			util.store('todos-STORAGE', this.todos); // uses local storage to  store items in todos-STORAGE key // Case 2. 'this' refers to App object.
 		},
 		renderFooter: function () {
-			var todoCount = this.todos.length; // total todos array length (number of todos) assign to var todoCount;
-			var activeTodoCount = this.getActiveTodos().length; // Get active todos length (number) by running getActiveTodos method and assign it to activeTodoCount variable.
-			var template = this.footerTemplate({
+			var todoCount = this.todos.length; // total todos array length (number of todos) assign to var todoCount; // Case 2. 'this' refers to App object.
+			var activeTodoCount = this.getActiveTodos().length; // Get active todos length (number) by running getActiveTodos method and assign it to activeTodoCount variable. Case 2. 'this' refers to App object.
+			var template = this.footerTemplate({ // Case 2. 'this' refers to App object.
 				activeTodoCount: activeTodoCount,
 				activeTodoWord: util.pluralize(activeTodoCount, 'item'),
 				completedTodos: todoCount - activeTodoCount,
-				filter: this.filter
+				filter: this.filter // Case 2. 'this' refers to App object.
 			});
 			var footerId = document.getElementById('footer');
 			if (todoCount > 0) {
@@ -180,24 +180,24 @@
 		toggleAll: function (e) {
       var isChecked = e.target.checked; // replaced
 			// var isChecked = $(e.target).prop('checked');
-			this.todos.forEach(function (todo) {
+			this.todos.forEach(function (todo) { // Case 2. 'this' refers to App object.
 				todo.completed = isChecked;
 			});
 
-			this.render();
+			this.render(); // Case 2. 'this' refers to App object.
 		},
 		getActiveTodos: function () {	// Getting todos not done
-			return this.todos.filter(function (todo) {
+			return this.todos.filter(function (todo) { // Case 2. 'this' refers to App object.
 				return !todo.completed;
 			});
 		},
 		getCompletedTodos: function () {	// Getting todos done
-			return this.todos.filter(function (todo) {
+			return this.todos.filter(function (todo) { // Case 2. 'this' refers to App object.
 				return todo.completed;
 			});
 		},
 		getFilteredTodos: function () {	// 
-			if (this.filter === 'active') {
+			if (this.filter === 'active') { // Case 2. 'this' refers to App object.
 				return this.getActiveTodos();
 			}
 
