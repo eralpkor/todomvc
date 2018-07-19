@@ -7,15 +7,15 @@
 	// logThis();
 	
 	(function()	{
-	'use strict';
+		'use strict';
 
 	Handlebars.registerHelper('eq', function (a, b, options) {
-		
+	
 		return a === b ? options.fn(this) : options.inverse(this); // Case 5, case 4.
 		
 	});
 
-	var ENTER_KEY = 13;
+	var ENTER_KEY = 13; // 'this' on strict mode refers to undefined.
 	var ESCAPE_KEY = 27;
 	
 	var util = {
@@ -53,7 +53,7 @@
 			var todoTem = document.getElementById('todo-template').innerHTML;	
 			// this.todoTemplate = Handlebars.compile($('#todo-template').html());
 			this.todoTemplate = Handlebars.compile(todoTem);	// creates handlebar templates. // Case 2
-			// console.log(this);
+		
 			var footerTem = document.getElementById('footer-template').innerHTML;
 			// this.footerTemplate = Handlebars.compile($('#footer-template').html());
 			this.footerTemplate = Handlebars.compile(footerTem);	// creates handlebar templates and assign it to App.footerTemplate object property. Case 2.
@@ -61,8 +61,8 @@
 
 			new Router({
 				'/:filter': function (filter) {
-					this.filter = filter; // Case 2. refers to App
-					this.render(); // Case 2. Refers to App object
+					this.filter = filter; // Case 4. refers to App
+					this.render(); // Case 4. Refers to App object
 				}.bind(this) // 'this' refers to App object, case 4.
 			}).init('/all');	// url/#/all Showing all todos
 		},
@@ -119,7 +119,7 @@
 					this.destroy(e);
 				}
 			}.bind(App)); */
-			todoList.addEventListener('click', function(e) {
+			todoList.addEventListener('click', function(e) { // 
 				if (e.target.className == 'destroy') {
 					App.destroy(e);
 				}
@@ -150,7 +150,7 @@
 			} else {
 				toggleAll.checked = false;
 			}
-			// $('#toggle-all').prop('checked', this.getActiveTodos().length === 0); // replaced
+			// $('#toggle-all').prop('checked', this.getActiveTodos().length === 0); // Case 2.
       this.renderFooter(); // Case 2. 'this' refers to App object.
       document.getElementById('new-todo').focus();  // replaced
 			// $('#new-todo').focus();  // moves cursor to new-todo input
@@ -165,10 +165,10 @@
 				completedTodos: todoCount - activeTodoCount,
 				filter: this.filter // Case 2. 'this' refers to App object.
 			});
-			var footerId = document.getElementById('footer');
-			if (todoCount > 0) {
-				footerId.style.display = 'block';
-				footerId.innerHTML = template;
+			var footerId = document.getElementById('footer'); // Get element name ID footer and assign to footerId
+			if (todoCount > 0) { // if todo length is less then 0
+				footerId.style.display = 'block'; // Change CSS style on footerId to block, display. 
+				footerId.innerHTML = template; // Change it to template
 			} else {
 				footerId.style.display = 'none';
 			}
@@ -259,8 +259,8 @@
 			// $input.val($input.val()).focus();	// sets input to input and focus to it
 		},
 		editKeyup: function (e) {	// if enter and esc key pressed this will blur (loose focus) on enter key and aborts on esc key
-			if (e.which === ENTER_KEY) {	// if any other key pressed it goes to update 0
-				e.target.blur();
+			if (e.which === ENTER_KEY) {	// if any other key pressed it goes to update. Enter key
+				e.target.blur(); // loose focus
 			}
 
 			if (e.which === ESCAPE_KEY) {
@@ -277,20 +277,20 @@
 			// var val = $el.val().trim();
 
 			if (!val) {	// if value is not value run destroy method
-				this.destroy(e);
+				this.destroy(e); // Case 2.
 				return;
 			}
 			if ($el.getAttribute('abort')) {	// if 
 				$el.setAttribute('abort', false);
 			} else {
-				this.todos[this.indexFromEl(el)].title = val;
+				this.todos[this.indexFromEl(el)].title = val; // Case 2. When a function is called as a method
 			}
 
 			this.render();
 		},
 		destroy: function (e) {	// finds list items id translate it to position in the array and delete it from array
-			this.todos.splice(this.indexFromEl(e.target), 1);
-			this.render();
+			this.todos.splice(this.indexFromEl(e.target), 1); // Case 2.
+			this.render(); // Case 2.
 		}
 	};
 
